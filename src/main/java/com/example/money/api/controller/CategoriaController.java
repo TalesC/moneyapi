@@ -4,9 +4,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.example.money.api.event.ControllerCreatedEvent;
 import com.example.money.api.model.Categoria;
 import com.example.money.api.repository.CategoriaRepository;
 
@@ -30,20 +35,19 @@ public class CategoriaController {
 	@Autowired
 	private CategoriaRepository repository;
 	
+	@Autowired
+	private ApplicationEventPublisher publisher;
+	
 	@GetMapping
 	public List<Categoria> findAll() {
 		return repository.findAll();
 	}
 	
 	@PostMapping
-	public ResponseEntity<Categoria> create(@Valid @RequestBody Categoria categoria) {
+	public ResponseEntity<Categoria> create(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
 		Categoria criada = repository.save(categoria);
-		
-		URI uri =  ServletUriComponentsBuilder
-						.fromCurrentRequestUri().path("/{id}")
-						.buildAndExpand(criada.getId()).toUri();
-		
-		return ResponseEntity.created(uri).body(criada);
+		publisher.publishEvent(new ControllerCreatedEvent(this, response, criada.getId()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(criada);
 	}
 	
 	@GetMapping("/{id}")
