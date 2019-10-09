@@ -8,5 +8,6 @@ public interface LancamentoService {
 	
 	public List<Lancamento> findAll();
 	public Lancamento findById(Long id);
+	public Lancamento create(Lancamento lancamento);
 	
 }

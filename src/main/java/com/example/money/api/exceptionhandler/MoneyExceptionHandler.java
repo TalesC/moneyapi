@@ -2,6 +2,7 @@ package com.example.money.api.exceptionhandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -42,8 +43,8 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, 	erros, headers, status, request);
 	}
 	
-	@ExceptionHandler({EmptyResultDataAccessException.class})
-	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+	@ExceptionHandler({EmptyResultDataAccessException.class, NoSuchElementException.class})
+	public ResponseEntity<Object> handleEmptyResultDataAccessException(Exception ex, WebRequest request) {
 		String menssagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
 		String menssagemDesenvolvedor = ex.toString();
 		return handleExceptionInternal(ex, new Erro(menssagemUsuario, menssagemDesenvolvedor),

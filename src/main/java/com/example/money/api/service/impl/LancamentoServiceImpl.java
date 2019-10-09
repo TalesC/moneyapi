@@ -1,7 +1,6 @@
 package com.example.money.api.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,15 +19,20 @@ public class LancamentoServiceImpl implements LancamentoService {
 	@Override
 	public List<Lancamento> findAll() {
 		List<Lancamento> lancamentos = repository.findAll();
-		if(lancamentos.isEmpty() || lancamentos == null) throw new EmptyResultDataAccessException(1);
+		if(lancamentos == null || lancamentos.isEmpty()) throw new EmptyResultDataAccessException(1);
 		return lancamentos;
 	}
 
 	@Override
 	public Lancamento findById(Long id) {
-		Optional<Lancamento> lancamento = repository.findById(id);
-		if(lancamento.isEmpty()) throw new EmptyResultDataAccessException(1);
-		return lancamento.get();
+		return repository.findById(id).orElseThrow();
 	}
+
+	@Override
+	public Lancamento create(Lancamento lancamento) {
+		return repository.save(lancamento);		
+	}
+
+	
 
 }
