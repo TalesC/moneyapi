@@ -24,7 +24,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import com.example.money.api.event.ControllerCreatedEvent;
 import com.example.money.api.model.Pessoa;
 import com.example.money.api.repository.PessoaRepository;
-import com.example.money.api.service.PessoaService;
+import com.example.money.api.service.PessoasService;
 
 @RestController
 @CrossOrigin
@@ -36,7 +36,7 @@ public class PessoaController {
 	private PessoaRepository repository;
 	
 	@Autowired
-	private PessoaService service;
+	private PessoasService service;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
